@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { RestauranteController } from './controllers/restaurante.controller';
 import { PrismaRestauranteRepository } from './repositories/prisma-restaurante.repository';
 import { RestauranteRepository } from './repositories/restaurante.repository';
@@ -9,7 +8,7 @@ import { GetRestauranteHandler } from './queries/get-restaurente/get-restaurante
 import { GetRestaurantesHandler } from './queries/get-restaurantes/get-restaurantes.handler';
 
 @Module({
-  imports: [CqrsModule, PrismaModule],
+  imports: [CqrsModule],
   controllers: [RestauranteController],
   providers: [
     PrismaRestauranteRepository,
