@@ -15,4 +15,23 @@ datasource db {
 model Categoria {
   id String @id @default(uuid()) @db.Uuid
   nome String
+
+  restaurantes Restaurante[]
+}
+
+model Restaurante {
+  id String @id @default(uuid()) @db.Uuid
+  nome String
+  descricao String?
+  endereco String
+  cidade String
+  estado String
+  latitude Float?
+  longitude Float?
+
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  categoriaId String? @db.Uuid
+  categoria Categoria? @relation(fields: [categoriaId], references: [id])
 }
