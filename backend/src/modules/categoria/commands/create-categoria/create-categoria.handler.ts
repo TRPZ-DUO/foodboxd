@@ -4,7 +4,7 @@ import { CategoriaRepository } from '../../repositories/categoria.repository';
 import { ConflictException } from '@nestjs/common';
 import { Categoria } from '../../entities/categoria.entity';
 
-@CommandHandler(CreateCategoriaHandler)
+@CommandHandler(CreateCategoriaCommand)
 export class CreateCategoriaHandler implements ICommandHandler<CreateCategoriaCommand> {
   constructor(private readonly repository: CategoriaRepository) {}
 
