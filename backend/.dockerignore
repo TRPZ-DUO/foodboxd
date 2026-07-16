@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+.env
+*.log
+.git
+.vscode
+.idea
+# Client gerado no host (Windows): precisa ser regerado dentro do container.
+src/generated
