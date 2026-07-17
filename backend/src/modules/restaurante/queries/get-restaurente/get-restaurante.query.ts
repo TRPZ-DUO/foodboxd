@@ -1,1 +1,3 @@
-export class GetRestauranteQuery {}
+export class GetRestauranteQuery {
+  constructor(public readonly nome: string) {}
+}
