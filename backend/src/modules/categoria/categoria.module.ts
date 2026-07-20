@@ -5,7 +5,7 @@ import { CategoriaController } from './controllers/categoria.controller';
 import { PrismaCategoriaRepository } from './repositories/prisma-categoria.repository';
 import { CategoriaRepository } from './repositories/categoria.repository';
 import { CreateCategoriaHandler } from './commands/create-categoria/create-categoria.handler';
-import { GetCategoriaByNomeHandler } from './queries/get-categoria/get-categoria-by-nome.handler';
+import { GetCategoriaByNomeHandler } from './queries/get-categoria-by-nome/get-categoria-by-nome.handler';
 import { GetCategoriasHandler } from './queries/get-categorias/get-categorias.handler';
 
 @Module({
