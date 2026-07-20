@@ -9,7 +9,7 @@ export class CreateRestauranteHandler implements ICommandHandler<CreateRestauran
   constructor(private readonly repository: RestauranteRepository) {}
 
   async execute(command: CreateRestauranteCommand): Promise<any> {
-    const existe = await this.repository.findByNome(command.nome);
+    const existe = await this.repository.findByNome(command.data.nome);
 
     if (existe) {
       throw new ConflictException('Restaurante já cadastrado');
@@ -17,14 +17,14 @@ export class CreateRestauranteHandler implements ICommandHandler<CreateRestauran
 
     const restaurante = new Restaurante(
       crypto.randomUUID(),
-      command.nome,
-      command.descricao,
-      command.endereco,
-      command.cidade,
-      command.estado,
-      command.latitude,
-      command.longitude,
-      command.categoriaId,
+      command.data.nome,
+      command.data.descricao,
+      command.data.endereco,
+      command.data.cidade,
+      command.data.estado,
+      command.data.latitude,
+      command.data.longitude,
+      command.data.categoriaId,
     );
 
     return this.repository.create(restaurante);
