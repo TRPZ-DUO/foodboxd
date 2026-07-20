@@ -37,4 +37,35 @@ export class PrismaCategoriaRepository implements CategoriaRepository {
       (categoria) => new Categoria(categoria.id, categoria.nome),
     );
   }
+
+  async findById(id: string): Promise<Categoria | null> {
+    const categoria = await this.prisma.categoria.findUnique({
+      where: { id },
+    });
+
+    if (!categoria) {
+      return null;
+    }
+
+    return new Categoria(categoria.id, categoria.nome);
+  }
+
+  async update(categoria: Categoria): Promise<Categoria> {
+    const data = await this.prisma.categoria.update({
+      where: {
+        id: categoria.id,
+      },
+      data: {
+        nome: categoria.nome,
+      },
+    });
+
+    return new Categoria(data.id, data.nome);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.categoria.delete({
+      where: { id },
+    });
+  }
 }
