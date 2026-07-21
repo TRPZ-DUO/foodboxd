@@ -6,7 +6,10 @@ import { PrismaCategoriaRepository } from './repositories/prisma-categoria.repos
 import { CategoriaRepository } from './repositories/categoria.repository';
 import { CreateCategoriaHandler } from './commands/create-categoria/create-categoria.handler';
 import { GetCategoriaByNomeHandler } from './queries/get-categoria-by-nome/get-categoria-by-nome.handler';
-import { GetCategoriasHandler } from './queries/get-categorias/get-categorias.handler';
+import { GetAllCategoriasHandler } from './queries/get-all-categorias/get-categorias.handler';
+import { GetCategoriaByIdHandler } from './queries/get-categoria-by-id/get-categoria-by-id.handler';
+import { DeleteCategoriaHandler } from './commands/delete-categoria/delete-categoria.handler';
+import { UpdateCategoriaHandler } from './commands/update-categoria/update-categoria.handler';
 
 @Module({
   imports: [CqrsModule, PrismaModule],
@@ -20,8 +23,12 @@ import { GetCategoriasHandler } from './queries/get-categorias/get-categorias.ha
     },
 
     CreateCategoriaHandler,
+    DeleteCategoriaHandler,
+    UpdateCategoriaHandler,
+
     GetCategoriaByNomeHandler,
-    GetCategoriasHandler,
+    GetAllCategoriasHandler,
+    GetCategoriaByIdHandler,
   ],
 })
 export class CategoriaModule {}

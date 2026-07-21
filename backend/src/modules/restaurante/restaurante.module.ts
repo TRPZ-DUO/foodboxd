@@ -4,8 +4,11 @@ import { RestauranteController } from './controllers/restaurante.controller';
 import { PrismaRestauranteRepository } from './repositories/prisma-restaurante.repository';
 import { RestauranteRepository } from './repositories/restaurante.repository';
 import { CreateRestauranteHandler } from './commands/create-restaurante/create-restaurante.handler';
-import { GetRestauranteHandler } from './queries/get-restaurente/get-restaurante.handler';
-import { GetRestaurantesHandler } from './queries/get-restaurantes/get-restaurantes.handler';
+import { GetRestauranteByNomeHandler } from './queries/get-restaurente-by-nome/get-restaurante-by-nome.handler';
+import { GetAllRestaurantesHandler } from './queries/get-all-restaurantes/get-all-restaurantes.handler';
+import { DeleteRestauranteHandler } from './commands/delete-restaurante/delete-restaurante.handler';
+import { UpdateRestauranteHandler } from './commands/update-restaurante/update-restaurante.handler';
+import { GetRestauranteByIdHandler } from './queries/get-restaurante-by-id/get-restaurante-by-id.handler';
 
 @Module({
   imports: [CqrsModule],
@@ -19,8 +22,12 @@ import { GetRestaurantesHandler } from './queries/get-restaurantes/get-restauran
     },
 
     CreateRestauranteHandler,
-    GetRestauranteHandler,
-    GetRestaurantesHandler,
+    DeleteRestauranteHandler,
+    UpdateRestauranteHandler,
+
+    GetRestauranteByNomeHandler,
+    GetAllRestaurantesHandler,
+    GetRestauranteByIdHandler,
   ],
 })
 export class RestauranteModule {}
