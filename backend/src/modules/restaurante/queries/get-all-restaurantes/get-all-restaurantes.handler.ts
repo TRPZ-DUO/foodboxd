@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetRestaurantesQuery } from './get-restaurantes.query';
+import { GetAllRestaurantesQuery } from './get-all-restaurantes.query';
 import { RestauranteRepository } from '../../repositories/restaurante.repository';
 import { Restaurante } from '../../entities/restaurante.entity';
 
-@QueryHandler(GetRestaurantesQuery)
-export class GetRestaurantesHandler implements IQueryHandler<GetRestaurantesQuery> {
+@QueryHandler(GetAllRestaurantesQuery)
+export class GetAllRestaurantesHandler implements IQueryHandler<GetAllRestaurantesQuery> {
   constructor(private readonly repository: RestauranteRepository) {}
 
   async execute(): Promise<Restaurante[]> {

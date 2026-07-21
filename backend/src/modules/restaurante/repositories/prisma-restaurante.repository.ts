@@ -35,6 +35,28 @@ export class PrismaRestauranteRepository implements RestauranteRepository {
     );
   }
 
+  async findById(id: string): Promise<Restaurante | null> {
+    const restaurante = await this.prisma.restaurante.findUnique({
+      where: { id },
+    });
+
+    if (!restaurante) {
+      return null;
+    }
+
+    return new Restaurante(
+      restaurante.id,
+      restaurante.nome,
+      restaurante.descricao,
+      restaurante.endereco,
+      restaurante.cidade,
+      restaurante.estado,
+      restaurante.latitude,
+      restaurante.longitude,
+      restaurante.categoriaId,
+    );
+  }
+
   async findByNome(nome: string): Promise<Restaurante | null> {
     const restaurante = await this.prisma.restaurante.findFirst({
       where: { nome },
@@ -74,5 +96,38 @@ export class PrismaRestauranteRepository implements RestauranteRepository {
           restaurantes.categoriaId,
         ),
     );
+  }
+
+  async update(restaurante: Restaurante): Promise<Restaurante> {
+    const data = await this.prisma.restaurante.update({
+      where: {
+        id: restaurante.id,
+      },
+      data: {
+        nome: restaurante.nome,
+        descricao: restaurante.descricao,
+        endereco: restaurante.endereco,
+        cidade: restaurante.cidade,
+        estado: restaurante.estado,
+        latitude: restaurante.latitude,
+        longitude: restaurante.longitude,
+        categoriaId: restaurante.categoriaId,
+      },
+    });
+    return new Restaurante(
+      data.id,
+      data.nome,
+      data.descricao,
+      data.endereco,
+      data.cidade,
+      data.estado,
+      data.latitude,
+      data.longitude,
+      data.categoriaId,
+    );
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.restaurante.delete({ where: { id } });
   }
 }

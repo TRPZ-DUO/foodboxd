@@ -5,5 +5,11 @@ export abstract class RestauranteRepository {
 
   abstract findByNome(nome: string): Promise<Restaurante | null>;
 
+  abstract findById(id: string): Promise<Restaurante | null>;
+
   abstract findAll(): Promise<Restaurante[]>;
+
+  abstract update(restaurante: Restaurante): Promise<Restaurante>;
+
+  abstract delete(id: string): Promise<void>;
 }

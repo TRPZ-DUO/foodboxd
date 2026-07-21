@@ -12,7 +12,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCategoriaDto } from '../dto/create-categoria.dto';
 import { CreateCategoriaCommand } from '../commands/create-categoria/create-categoria.command';
 import { GetCategoriaByNomeQuery } from '../queries/get-categoria-by-nome/get-categoria-by-nome.query';
-import { GetCategoriasQuery } from '../queries/get-categorias/get-categorias.query';
+import { GetAllCategoriasQuery } from '../queries/get-all-categorias/get-categorias.query';
 import { GetCategoriaByIdQuery } from '../queries/get-categoria-by-id/get-categoria-by-id.query';
 import { UpdateCategoriaDto } from '../dto/update-categoria.dto';
 import { UpdateCategoriaCommand } from '../commands/update-categoria/update-categoria.command';
@@ -37,7 +37,7 @@ export class CategoriaController {
 
   @Get()
   findAll() {
-    return this.queryBus.execute(new GetCategoriasQuery());
+    return this.queryBus.execute(new GetAllCategoriasQuery());
   }
 
   @Get(':id')
