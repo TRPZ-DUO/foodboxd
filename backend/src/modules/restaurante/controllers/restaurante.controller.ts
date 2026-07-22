@@ -7,16 +7,18 @@ import {
   ParseUUIDPipe,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateRestauranteDto } from '../dto/create-restaurante.dto';
 import { CreateRestauranteCommand } from '../commands/create-restaurante/create-restaurante.command';
-import { GetRestauranteByNomeQuery } from '../queries/get-restaurente-by-nome/get-restaurante-by-nome.query';
 import { GetAllRestaurantesQuery } from '../queries/get-all-restaurantes/get-all-restaurantes.query';
 import { GetRestauranteByIdQuery } from '../queries/get-restaurante-by-id/get-restaurante-by-id.query';
 import { UpdateRestauranteDto } from '../dto/update-restaurante.dto';
 import { UpdateRestauranteCommand } from '../commands/update-restaurante/update-restaurante.command';
 import { DeleteRestauranteCommand } from '../commands/delete-restaurante/delete-restaurante.command';
+import { SearchRestauranteDto } from '../dto/search-restaurante.dto';
+import { SearchRestauranteQuery } from '../queries/search-restaurante/search-restaurante.query';
 
 @Controller('restaurantes')
 export class RestauranteController {
@@ -30,9 +32,9 @@ export class RestauranteController {
     return this.commandBus.execute(new CreateRestauranteCommand(dto));
   }
 
-  @Get('nome/:nome')
-  findByNome(@Param('nome') nome: string) {
-    return this.queryBus.execute(new GetRestauranteByNomeQuery(nome));
+  @Get()
+  search(@Query() filters: SearchRestauranteDto) {
+    return this.queryBus.execute(new SearchRestauranteQuery(filters));
   }
 
   @Get(':id')
