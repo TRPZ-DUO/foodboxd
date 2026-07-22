@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RestauranteRepository } from './restaurante.repository';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Restaurante } from '../entities/restaurante.entity';
+import { SearchRestauranteDto } from '../dto/search-restaurante.dto';
 
 @Injectable()
 export class PrismaRestauranteRepository implements RestauranteRepository {
@@ -57,25 +58,46 @@ export class PrismaRestauranteRepository implements RestauranteRepository {
     );
   }
 
-  async findByNome(nome: string): Promise<Restaurante | null> {
-    const restaurante = await this.prisma.restaurante.findFirst({
-      where: { nome },
+  async search(filters: SearchRestauranteDto): Promise<Restaurante[]> {
+    const restaurantes = await this.prisma.restaurante.findMany({
+      where: {
+        ...(filters.nome && {
+          nome: {
+            contains: filters.nome,
+            mode: 'insensitive',
+          },
+        }),
+        ...(filters.categoriaId && {
+          categoriaId: filters.categoriaId,
+        }),
+        ...(filters.cidade && {
+          cidade: {
+            contains: filters.cidade,
+            mode: 'insensitive',
+          },
+        }),
+        ...(filters.estado && {
+          estado: {
+            contains: filters.estado,
+            mode: 'insensitive',
+          },
+        }),
+      },
     });
 
-    if (!restaurante) {
-      return null;
-    }
-
-    return new Restaurante(
-      restaurante.id,
-      restaurante.nome,
-      restaurante.descricao,
-      restaurante.endereco,
-      restaurante.cidade,
-      restaurante.estado,
-      restaurante.latitude,
-      restaurante.longitude,
-      restaurante.categoriaId,
+    return restaurantes.map(
+      (restaurante) =>
+        new Restaurante(
+          restaurante.id,
+          restaurante.nome,
+          restaurante.descricao,
+          restaurante.endereco,
+          restaurante.cidade,
+          restaurante.estado,
+          restaurante.latitude,
+          restaurante.longitude,
+          restaurante.categoriaId,
+        ),
     );
   }
 
