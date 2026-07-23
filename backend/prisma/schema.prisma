@@ -34,4 +34,42 @@ model Restaurante {
 
   categoriaId String @db.Uuid
   categoria Categoria @relation(fields: [categoriaId], references: [id])
+
+  @@index([categoriaId])
+
+  pratos Prato[]
+}
+
+model Prato {
+  id String @id @default(uuid()) @db.Uuid
+  nome String
+  descricao String? 
+  imagemUrl String?
+  mediaAvaliacoes Decimal @default(0) //posteriormente calcular a partir da tabela avaliacao
+
+  restauranteId String @db.Uuid
+  restaurante Restaurante @relation(fields: [restauranteId], references: [id])
+
+  @@index([restauranteId, nome])
+
+  tags PratoTag[]
+}
+
+model Tag {
+  id String @id @default(uuid()) @db.Uuid
+  nome String @unique
+
+  pratos PratoTag[]
+}
+
+model PratoTag {
+  pratoId String @db.Uuid
+  tagId String @db.Uuid
+
+  prato Prato @relation(fields: [pratoId], references: [id])
+  tag Tag @relation(fields: [tagId], references: [id])
+
+  @@index([tagId])
+
+  @@id([pratoId, tagId])
 }
