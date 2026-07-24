@@ -6,7 +6,6 @@ import { PratoRepository } from './prato.repository';
 @Injectable()
 export class PrismaPratoRepository implements PratoRepository {
   constructor(private readonly prisma: PrismaService) {}
-
   async create(prato: Prato): Promise<Prato> {
     const data = await this.prisma.prato.create({
       data: {
@@ -27,5 +26,30 @@ export class PrismaPratoRepository implements PratoRepository {
       Number(data.mediaAvaliacoes),
       data.restauranteId,
     );
+  }
+
+  async findById(id: string): Promise<Prato | null> {
+    const prato = await this.prisma.prato.findUnique({
+      where: { id },
+    });
+
+    if (!prato) {
+      return null;
+    }
+
+    return new Prato(
+      prato.id,
+      prato.nome,
+      prato.descricao,
+      prato.imagemUrl,
+      Number(prato.mediaAvaliacoes),
+      prato.restauranteId,
+    );
+  }
+
+  async delete(id: string): Promise<void | null> {
+    await this.prisma.prato.delete({
+      where: { id },
+    });
   }
 }
