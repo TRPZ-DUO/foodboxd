@@ -12,7 +12,7 @@ export class GetTagByIdHandler implements IQueryHandler<GetTagByIdQuery> {
     const tag = await this.repository.findById(query.id);
 
     if (!tag) {
-      throw new NotFoundException('Tag não encontrada, id: ', query.id);
+      throw new NotFoundException(`Tag não encontrada, id: ${query.id}`);
     }
 
     return new Tag(tag.id, tag.nome);

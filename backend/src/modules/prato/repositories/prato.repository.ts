@@ -6,4 +6,10 @@ export abstract class PratoRepository {
   abstract delete(id: string): Promise<void | null>;
 
   abstract findById(id: string): Promise<Prato | null>;
+
+  abstract addTag(pratoId: string, tagId: string): Promise<void>;
+
+  abstract removeTag(pratoId: string, tagId: string): Promise<void>;
+
+  abstract existsTag(pratoId: string, tagId: string): Promise<boolean>;
 }

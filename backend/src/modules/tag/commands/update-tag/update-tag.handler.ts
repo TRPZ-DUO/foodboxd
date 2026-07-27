@@ -12,7 +12,7 @@ export class UpdateTagHandler implements ICommandHandler<UpdateTagCommand> {
     const tag = await this.repository.findById(command.id);
 
     if (!tag) {
-      throw new NotFoundException('Tag não encontrada, id: ', command.id);
+      throw new NotFoundException(`Tag não encontrada, id: ${command.id}`);
     }
 
     tag.atualizar(command.data);

@@ -11,7 +11,7 @@ export class DeleteTagHandler implements ICommandHandler<DeleteTagCommand> {
     const tag = await this.repository.findById(command.id);
 
     if (!tag) {
-      throw new NotFoundException('Tag não existe, id:', command.id);
+      throw new NotFoundException(`Tag não existe, id: ${command.id}`);
     }
 
     return this.repository.delete(tag.id);

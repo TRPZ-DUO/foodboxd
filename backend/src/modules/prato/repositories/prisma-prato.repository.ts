@@ -6,6 +6,7 @@ import { PratoRepository } from './prato.repository';
 @Injectable()
 export class PrismaPratoRepository implements PratoRepository {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(prato: Prato): Promise<Prato> {
     const data = await this.prisma.prato.create({
       data: {
@@ -51,5 +52,38 @@ export class PrismaPratoRepository implements PratoRepository {
     await this.prisma.prato.delete({
       where: { id },
     });
+  }
+
+  async addTag(pratoId: string, tagId: string): Promise<void> {
+    await this.prisma.pratoTag.create({
+      data: {
+        pratoId,
+        tagId,
+      },
+    });
+  }
+
+  async removeTag(pratoId: string, tagId: string): Promise<void> {
+    await this.prisma.pratoTag.delete({
+      where: {
+        pratoId_tagId: {
+          pratoId,
+          tagId,
+        },
+      },
+    });
+  }
+
+  async existsTag(pratoId: string, tagId: string): Promise<boolean> {
+    const pratoTag = await this.prisma.pratoTag.findUnique({
+      where: {
+        pratoId_tagId: {
+          pratoId,
+          tagId,
+        },
+      },
+    });
+
+    return pratoTag !== null;
   }
 }
