@@ -36,6 +36,7 @@ model Restaurante {
   categoria Categoria @relation(fields: [categoriaId], references: [id])
 
   @@index([categoriaId])
+  @@index([nome])
 
   pratos Prato[]
 }
@@ -51,6 +52,7 @@ model Prato {
   restaurante Restaurante @relation(fields: [restauranteId], references: [id])
 
   @@index([restauranteId, nome])
+  @@index([nome])
 
   tags PratoTag[]
 }
