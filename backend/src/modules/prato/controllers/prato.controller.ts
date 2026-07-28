@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
@@ -15,6 +16,8 @@ import { GetPratoByIdQuery } from '../queries/get-prato-by-id/get-prato-by-id.qu
 import { DeletePratoCommand } from '../commands/delete-prato/delete-prato.command';
 import { AddTagCommand } from '../commands/add-tag/add-tag.command';
 import { RemoveTagCommand } from '../commands/remove-tag/remove-tag.command';
+import { UpdatePratoDto } from '../dto/update-prato.dto';
+import { UpdatePratoCommand } from '../commands/update-prato/update-prato.command';
 
 @Controller('pratos')
 export class PratoController {
@@ -26,6 +29,11 @@ export class PratoController {
   @Post()
   create(@Body() dto: CreatePratoDto) {
     return this.commandBus.execute(new CreatePratoCommand(dto));
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdatePratoDto) {
+    return this.commandBus.execute(new UpdatePratoCommand(id, dto));
   }
 
   @Post(':pratoId/tags/:tagId')

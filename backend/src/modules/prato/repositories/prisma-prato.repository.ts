@@ -86,4 +86,29 @@ export class PrismaPratoRepository implements PratoRepository {
 
     return pratoTag !== null;
   }
+
+  async update(prato: Prato): Promise<Prato> {
+    const data = await this.prisma.prato.update({
+      where: {
+        id: prato.id,
+      },
+      data: {
+        id: prato.id,
+        nome: prato.nome,
+        descricao: prato.descricao,
+        imagemUrl: prato.imagemUrl,
+        mediaAvaliacoes: Number(prato.mediaAvaliacoes),
+        restauranteId: prato.restauranteId,
+      },
+    });
+
+    return new Prato(
+      data.id,
+      data.nome,
+      data.descricao,
+      data.imagemUrl,
+      Number(data.mediaAvaliacoes),
+      data.restauranteId,
+    );
+  }
 }
