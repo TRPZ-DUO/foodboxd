@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { CommandBus } from '@nestjs/cqrs';
@@ -19,6 +20,8 @@ import { RemoveTagCommand } from '../commands/remove-tag/remove-tag.command';
 import { UpdatePratoDto } from '../dto/update-prato.dto';
 import { UpdatePratoCommand } from '../commands/update-prato/update-prato.command';
 import { GetAllPratosQuery } from '../queries/get-all-pratos/get-all-pratos.query';
+import { SearchPratoDto } from '../dto/search-prato-dto';
+import { SearchPratoQuery } from '../queries/search-prato/search-prato.query';
 
 @Controller('pratos')
 export class PratoController {
@@ -43,6 +46,11 @@ export class PratoController {
     @Param('tagId', ParseUUIDPipe) tagId: string,
   ) {
     return this.commandBus.execute(new AddTagCommand(pratoId, tagId));
+  }
+
+  @Get()
+  search(@Query() filters: SearchPratoDto) {
+    return this.queryBus.execute(new SearchPratoQuery(filters));
   }
 
   @Get()

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prato } from '../entities/prato.entity';
 import { PratoRepository } from './prato.repository';
+import { SearchPratoDto } from '../dto/search-prato-dto';
 
 @Injectable()
 export class PrismaPratoRepository implements PratoRepository {
@@ -26,6 +27,54 @@ export class PrismaPratoRepository implements PratoRepository {
       data.imagemUrl,
       Number(data.mediaAvaliacoes),
       data.restauranteId,
+    );
+  }
+
+  async search(filters: SearchPratoDto): Promise<Prato[]> {
+    const pratos = await this.prisma.prato.findMany({
+      where: {
+        ...(filters.nome && {
+          nome: {
+            contains: filters.nome,
+            mode: 'insensitive',
+          },
+        }),
+        ...(filters.restauranteId && {
+          restauranteId: filters.restauranteId,
+        }),
+        ...(filters.tag && {
+          tags: {
+            some: {
+              tag: {
+                nome: {
+                  contains: filters.tag,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+        }),
+        ...(filters.nomeRestaurante && {
+          restaurante: {
+            nome: {
+              contains: filters.nomeRestaurante,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      },
+    });
+
+    return pratos.map(
+      (prato) =>
+        new Prato(
+          prato.id,
+          prato.nome,
+          prato.descricao,
+          prato.imagemUrl,
+          Number(prato.mediaAvaliacoes),
+          prato.restauranteId,
+        ),
     );
   }
 
