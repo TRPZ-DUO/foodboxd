@@ -9,6 +9,8 @@ export abstract class PratoRepository {
 
   abstract findById(id: string): Promise<Prato | null>;
 
+  abstract findAll(): Promise<Prato[]>;
+
   abstract addTag(pratoId: string, tagId: string): Promise<void>;
 
   abstract removeTag(pratoId: string, tagId: string): Promise<void>;

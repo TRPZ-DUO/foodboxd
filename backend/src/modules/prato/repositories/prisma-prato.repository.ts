@@ -32,6 +32,14 @@ export class PrismaPratoRepository implements PratoRepository {
   async findById(id: string): Promise<Prato | null> {
     const prato = await this.prisma.prato.findUnique({
       where: { id },
+      include: {
+        restaurante: true,
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+      },
     });
 
     if (!prato) {
@@ -45,6 +53,22 @@ export class PrismaPratoRepository implements PratoRepository {
       prato.imagemUrl,
       Number(prato.mediaAvaliacoes),
       prato.restauranteId,
+    );
+  }
+
+  async findAll(): Promise<Prato[]> {
+    const pratos = await this.prisma.prato.findMany();
+
+    return pratos.map(
+      (pratos) =>
+        new Prato(
+          pratos.id,
+          pratos.nome,
+          pratos.descricao,
+          pratos.imagemUrl,
+          Number(pratos.mediaAvaliacoes),
+          pratos.restauranteId,
+        ),
     );
   }
 
