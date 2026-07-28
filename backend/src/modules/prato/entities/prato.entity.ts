@@ -8,7 +8,7 @@ export class Prato {
     public readonly restauranteId: string,
   ) {}
 
-  atualizar(data: Partial<Omit<Prato, 'id'>>) {
+  atualizar(data: Partial<Omit<Prato, 'id' | 'restauranteId'>>) {
     Object.assign(
       this,
       Object.fromEntries(

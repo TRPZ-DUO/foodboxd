@@ -93,12 +93,10 @@ export class PrismaPratoRepository implements PratoRepository {
         id: prato.id,
       },
       data: {
-        id: prato.id,
         nome: prato.nome,
         descricao: prato.descricao,
         imagemUrl: prato.imagemUrl,
         mediaAvaliacoes: Number(prato.mediaAvaliacoes),
-        restauranteId: prato.restauranteId,
       },
     });
 
