@@ -1,4 +1,4 @@
 export class UpdateAvaliacaoDto {
-  public nota?: string;
+  public nota?: number;
   public descricao?: string | null;
 }

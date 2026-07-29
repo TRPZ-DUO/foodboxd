@@ -5,6 +5,8 @@ import { FotoAvaliacao } from '../entities/foto-avaliacao.entity';
 export abstract class AvaliacoesRepository {
   abstract create(avaliacao: Avaliacao): Promise<Avaliacao>;
 
+  abstract update(avaliacao: Avaliacao): Promise<Avaliacao>;
+
   abstract findById(id: string): Promise<Avaliacao | null>;
 
   abstract findAll(): Promise<Avaliacao[]>;

@@ -3,7 +3,9 @@ import { Avaliacao } from '../entities/avaliacao.entity';
 import { CurtidaAvaliacao } from '../entities/curtida-avaliacao.entity';
 import { FotoAvaliacao } from '../entities/foto-avaliacao.entity';
 import { AvaliacoesRepository } from './avaliacoes.repository';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -14,6 +16,28 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
         descricao: avaliacao.descricao,
         pratoId: avaliacao.pratoId,
         usuarioId: avaliacao.usuarioId,
+      },
+    });
+
+    return new Avaliacao(
+      data.id,
+      Number(data.nota),
+      data.descricao,
+      data.pratoId,
+      data.usuarioId,
+      data.criadoEm,
+      data.atualizadoEm,
+    );
+  }
+
+  async update(avaliacao: Avaliacao): Promise<Avaliacao> {
+    const data = await this.prisma.avaliacao.update({
+      where: {
+        id: avaliacao.id,
+      },
+      data: {
+        nota: Number(avaliacao.nota),
+        descricao: avaliacao.descricao,
       },
     });
 
