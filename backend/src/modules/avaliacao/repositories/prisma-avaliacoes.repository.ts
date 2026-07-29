@@ -87,6 +87,27 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
     );
   }
 
+  async findAllAvaliacoesByUsuario(usuarioId: string): Promise<Avaliacao[]> {
+    const avaliacoes = await this.prisma.avaliacao.findMany({
+      where: {
+        usuarioId: usuarioId,
+      },
+    });
+
+    return avaliacoes.map(
+      (avaliacao) =>
+        new Avaliacao(
+          avaliacao.id,
+          Number(avaliacao.nota),
+          avaliacao.descricao,
+          avaliacao.pratoId,
+          avaliacao.usuarioId,
+          avaliacao.criadoEm,
+          avaliacao.atualizadoEm,
+        ),
+    );
+  }
+
   async delete(id: string): Promise<void | null> {
     await this.prisma.avaliacao.delete({
       where: { id },

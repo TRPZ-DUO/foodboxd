@@ -9,6 +9,8 @@ export abstract class AvaliacoesRepository {
 
   abstract findById(id: string): Promise<Avaliacao | null>;
 
+  abstract findAllAvaliacoesByUsuario(usuarioId: string): Promise<Avaliacao[]>;
+
   abstract findAll(): Promise<Avaliacao[]>;
 
   abstract delete(id: string): Promise<void | null>;
