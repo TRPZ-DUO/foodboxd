@@ -11,7 +11,11 @@ export abstract class AvaliacoesRepository {
 
   abstract findAllAvaliacoesByUsuario(usuarioId: string): Promise<Avaliacao[]>;
 
+  abstract findFotosByAvaliacao(avaliacaoId: string): Promise<FotoAvaliacao[]>;
+
   abstract findAll(): Promise<Avaliacao[]>;
+
+  abstract findFotoById(id: string): Promise<FotoAvaliacao | null>;
 
   abstract delete(id: string): Promise<void | null>;
 

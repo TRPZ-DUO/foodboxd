@@ -113,6 +113,30 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
     );
   }
 
+  async findFotosByAvaliacao(avaliacaoId: string): Promise<FotoAvaliacao[]> {
+    const fotos = await this.prisma.fotoAvaliacao.findMany({
+      where: {
+        avaliacaoId,
+      },
+    });
+
+    return fotos.map(
+      (foto) => new FotoAvaliacao(foto.id, foto.urlImagem, foto.avaliacaoId),
+    );
+  }
+
+  async findFotoById(id: string): Promise<FotoAvaliacao | null> {
+    const foto = await this.prisma.fotoAvaliacao.findUnique({
+      where: { id },
+    });
+
+    if (!foto) {
+      return null;
+    }
+
+    return new FotoAvaliacao(foto.id, foto.urlImagem, foto.avaliacaoId);
+  }
+
   async delete(id: string): Promise<void | null> {
     const data = await this.prisma.avaliacao.delete({
       where: {

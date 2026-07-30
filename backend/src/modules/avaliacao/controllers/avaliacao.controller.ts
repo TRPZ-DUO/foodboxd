@@ -23,6 +23,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AddFotoCommand } from '../commands/add-foto/add-foto-command';
 import { diskStorage } from 'multer';
 import 'multer';
+import { GetAllFotosByAvaliacaoQuery } from '../queries/get-all-fotos-by-avaliacao/get-all-fotos-by-avaliacao.query';
+import { RemoveFotoCommand } from '../commands/remove-foto/remove-foto.command';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
@@ -36,7 +38,7 @@ export class AvaliacaoController {
     return this.commandBus.execute(new CreateAvaliacaoCommand(avaliacao));
   }
 
-  @Post(':id/fotos')
+  @Post(':avaliacaoId/fotos')
   @UseInterceptors(
     FileInterceptor('imagem', {
       storage: diskStorage({
@@ -49,12 +51,12 @@ export class AvaliacaoController {
     }),
   )
   addFoto(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const imagemUrl = `/uploads/${file.filename}`;
 
-    return this.commandBus.execute(new AddFotoCommand(id, imagemUrl));
+    return this.commandBus.execute(new AddFotoCommand(avaliacaoId, imagemUrl));
   }
 
   @Patch(':id')
@@ -63,6 +65,13 @@ export class AvaliacaoController {
     @Body() dto: UpdateAvaliacaoDto,
   ) {
     return this.commandBus.execute(new UpdateAvaliacaoCommand(id, dto));
+  }
+
+  @Get(':avaliacaoId/fotos')
+  findFotosByAvaliacao(
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
+  ) {
+    return this.queryBus.execute(new GetAllFotosByAvaliacaoQuery(avaliacaoId));
   }
 
   @Get()
@@ -85,5 +94,10 @@ export class AvaliacaoController {
   @Delete(':id')
   delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.commandBus.execute(new DeleteAvaliacaoCommand(id));
+  }
+
+  @Delete('fotos/:fotoId')
+  deleteFoto(@Param('fotoId', ParseUUIDPipe) fotoId: string) {
+    return this.commandBus.execute(new RemoveFotoCommand(fotoId));
   }
 }
