@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   Get,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CreateAvaliacaoDto } from '../dto/create-avaliacao.dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -17,6 +19,10 @@ import { UpdateAvaliacaoCommand } from '../commands/update-avaliacao/update-aval
 import { GetAllAvaliacoesQuery } from '../queries/get-all-avaliacoes/get-all-avaliacoes.query';
 import { GetAvaliacaoByIdQuery } from '../queries/get-avaliacao-by-id/get-avaliacao-by-id.query';
 import { GetAllAvaliacoesByUserQuery } from '../queries/get-all-avaliacoes-by-user/get-all-avaliacoes-by-user.query';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AddFotoCommand } from '../commands/add-foto/add-foto-command';
+import { diskStorage } from 'multer';
+import 'multer';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
@@ -28,6 +34,27 @@ export class AvaliacaoController {
   @Post()
   create(@Body() avaliacao: CreateAvaliacaoDto) {
     return this.commandBus.execute(new CreateAvaliacaoCommand(avaliacao));
+  }
+
+  @Post(':id/fotos')
+  @UseInterceptors(
+    FileInterceptor('imagem', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const nome = `${Date.now()}-${file.originalname}`;
+          cb(null, nome);
+        },
+      }),
+    }),
+  )
+  addFoto(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const imagemUrl = `/uploads/${file.filename}`;
+
+    return this.commandBus.execute(new AddFotoCommand(id, imagemUrl));
   }
 
   @Patch(':id')
