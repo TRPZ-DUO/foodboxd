@@ -169,7 +169,6 @@ export class PrismaPratoRepository implements PratoRepository {
         nome: prato.nome,
         descricao: prato.descricao,
         imagemUrl: prato.imagemUrl,
-        mediaAvaliacoes: Number(prato.mediaAvaliacoes),
       },
     });
 

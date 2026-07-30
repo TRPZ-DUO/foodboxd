@@ -12,12 +12,15 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
   async create(avaliacao: Avaliacao): Promise<Avaliacao> {
     const data = await this.prisma.avaliacao.create({
       data: {
+        id: avaliacao.id,
         nota: avaliacao.nota,
         descricao: avaliacao.descricao,
         pratoId: avaliacao.pratoId,
         usuarioId: avaliacao.usuarioId,
       },
     });
+
+    await this.updateMediaAvaliacoes(data.pratoId);
 
     return new Avaliacao(
       data.id,
@@ -40,6 +43,8 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
         descricao: avaliacao.descricao,
       },
     });
+
+    await this.updateMediaAvaliacoes(data.pratoId);
 
     return new Avaliacao(
       data.id,
@@ -109,9 +114,13 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
   }
 
   async delete(id: string): Promise<void | null> {
-    await this.prisma.avaliacao.delete({
-      where: { id },
+    const data = await this.prisma.avaliacao.delete({
+      where: {
+        id,
+      },
     });
+
+    await this.updateMediaAvaliacoes(data.pratoId);
   }
 
   async addFoto(
@@ -201,5 +210,25 @@ export class PrismaAvaliacoesRepository implements AvaliacoesRepository {
     });
 
     return avaliacao !== null;
+  }
+
+  private async updateMediaAvaliacoes(pratoId: string): Promise<void> {
+    const media = await this.prisma.avaliacao.aggregate({
+      where: {
+        pratoId,
+      },
+      _avg: {
+        nota: true,
+      },
+    });
+
+    await this.prisma.prato.update({
+      where: {
+        id: pratoId,
+      },
+      data: {
+        mediaAvaliacoes: media._avg.nota ?? 0,
+      },
+    });
   }
 }
