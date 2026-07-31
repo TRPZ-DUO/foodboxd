@@ -10,7 +10,7 @@ export class CreateAvaliacaoHandler implements ICommandHandler<CreateAvaliacaoCo
 
   async execute(command: CreateAvaliacaoCommand): Promise<Avaliacao> {
     const exists = await this.repository.existsAvaliacao(
-      command.data.usuarioId,
+      command.usuarioId,
       command.data.pratoId,
     );
 
@@ -23,7 +23,7 @@ export class CreateAvaliacaoHandler implements ICommandHandler<CreateAvaliacaoCo
       Number(command.data.nota),
       command.data.descricao,
       command.data.pratoId,
-      command.data.usuarioId,
+      command.usuarioId,
     );
 
     return this.repository.create(avaliacao);

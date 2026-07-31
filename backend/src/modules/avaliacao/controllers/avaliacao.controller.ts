@@ -9,6 +9,8 @@ import {
   Get,
   UseInterceptors,
   UploadedFile,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateAvaliacaoDto } from '../dto/create-avaliacao.dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -25,6 +27,10 @@ import { diskStorage } from 'multer';
 import 'multer';
 import { GetAllFotosByAvaliacaoQuery } from '../queries/get-all-fotos-by-avaliacao/get-all-fotos-by-avaliacao.query';
 import { RemoveFotoCommand } from '../commands/remove-foto/remove-foto.command';
+import { AddCurtidaCommand } from '../commands/add-curtida/add-curtida-command';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth/jwt-auth.guard';
+import type { AutenticacaoRequest } from 'src/modules/auth/interfaces/autenticacao-request.interface';
+import { RemoveCurtidaCommand } from '../commands/remove-curtida/remove-curtida.command';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
@@ -34,11 +40,15 @@ export class AvaliacaoController {
   ) {}
 
   @Post()
-  create(@Body() avaliacao: CreateAvaliacaoDto) {
-    return this.commandBus.execute(new CreateAvaliacaoCommand(avaliacao));
+  @UseGuards(JwtAuthGuard)
+  create(@Body() dto: CreateAvaliacaoDto, @Req() req: AutenticacaoRequest) {
+    return this.commandBus.execute(
+      new CreateAvaliacaoCommand(req.user.id, dto),
+    );
   }
 
   @Post(':avaliacaoId/fotos')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('imagem', {
       storage: diskStorage({
@@ -59,12 +69,27 @@ export class AvaliacaoController {
     return this.commandBus.execute(new AddFotoCommand(avaliacaoId, imagemUrl));
   }
 
+  @Post(':avaliacaoId/curtidas')
+  @UseGuards(JwtAuthGuard)
+  addCurtida(
+    @Req() req: AutenticacaoRequest,
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
+  ) {
+    return this.commandBus.execute(
+      new AddCurtidaCommand(req.user.id, avaliacaoId),
+    );
+  }
+
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateAvaliacaoDto,
+    @Req() req: AutenticacaoRequest,
   ) {
-    return this.commandBus.execute(new UpdateAvaliacaoCommand(id, dto));
+    return this.commandBus.execute(
+      new UpdateAvaliacaoCommand(id, req.user.id, dto),
+    );
   }
 
   @Get(':avaliacaoId/fotos')
@@ -92,12 +117,27 @@ export class AvaliacaoController {
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseUUIDPipe) id: string) {
-    return this.commandBus.execute(new DeleteAvaliacaoCommand(id));
+  @UseGuards(JwtAuthGuard)
+  delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AutenticacaoRequest,
+  ) {
+    return this.commandBus.execute(new DeleteAvaliacaoCommand(id, req.user.id));
   }
 
   @Delete('fotos/:fotoId')
   deleteFoto(@Param('fotoId', ParseUUIDPipe) fotoId: string) {
     return this.commandBus.execute(new RemoveFotoCommand(fotoId));
+  }
+
+  @Delete(':avaliacaoId/curtidas')
+  @UseGuards(JwtAuthGuard)
+  RemoveCurtida(
+    @Req() req: AutenticacaoRequest,
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
+  ) {
+    return this.commandBus.execute(
+      new RemoveCurtidaCommand(req.user.id, avaliacaoId),
+    );
   }
 }
