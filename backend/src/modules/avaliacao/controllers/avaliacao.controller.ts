@@ -40,11 +40,13 @@ export class AvaliacaoController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() avaliacao: CreateAvaliacaoDto) {
     return this.commandBus.execute(new CreateAvaliacaoCommand(avaliacao));
   }
 
   @Post(':avaliacaoId/fotos')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('imagem', {
       storage: diskStorage({
@@ -77,6 +79,7 @@ export class AvaliacaoController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateAvaliacaoDto,
@@ -109,6 +112,7 @@ export class AvaliacaoController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.commandBus.execute(new DeleteAvaliacaoCommand(id));
   }
