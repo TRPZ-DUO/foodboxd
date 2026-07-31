@@ -14,16 +14,32 @@ datasource db {
   provider = "postgresql"
 }
 
+model Usuario {
+  id          String   @id @default(uuid()) @db.Uuid
+  nomeUsuario String   @unique
+  email       String   @unique
+  senhaHash   String
+  biografia   String?
+  avatar      String?
+  dataCriacao DateTime @default(now())
+  
+  curtidas CurtidaAvaliacao[]
+  avaliacoes Avaliacao[]
+
+  @@map("usuarios")
+  
+}
+
 model Categoria {
   id String @id @default(uuid()) @db.Uuid
-  nome String
+  nome String @unique
 
   restaurantes Restaurante[]
 }
 
 model Restaurante {
   id String @id @default(uuid()) @db.Uuid
-  nome String
+  nome String 
   descricao String?
   endereco String
   cidade String
@@ -34,18 +50,101 @@ model Restaurante {
   criadoEm DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
-  categoriaId String? @db.Uuid
-  categoria Categoria? @relation(fields: [categoriaId], references: [id])
+  categoriaId String @db.Uuid
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+
+  @@index([categoriaId])
+  @@index([nome])
+
+  pratos Prato[]
 }
 
-model Usuario {
-  id          String   @id @default(uuid()) @db.Uuid
-  nomeUsuario String   @unique
-  email       String   @unique
-  senhaHash   String
-  biografia   String?
-  avatar      String?
-  dataCriacao DateTime @default(now())
 
-  @@map("usuarios")
+
+model Prato {
+  id String @id @default(uuid()) @db.Uuid
+  nome String
+  descricao String? 
+  imagemUrl String?
+  mediaAvaliacoes Decimal @default(0) //posteriormente calcular a partir da tabela avaliacao
+
+  restauranteId String @db.Uuid
+  restaurante Restaurante @relation(fields: [restauranteId], references: [id])
+
+  @@index([restauranteId, nome])
+  @@index([nome])
+
+  tags PratoTag[]
+  avaliacoes Avaliacao[]
+}
+
+model Tag {
+  id String @id @default(uuid()) @db.Uuid
+  nome String @unique
+
+  pratos PratoTag[]
+}
+
+model PratoTag {
+  pratoId String @db.Uuid
+  tagId String @db.Uuid
+
+  prato Prato @relation(fields: [pratoId], references: [id])
+  tag Tag @relation(fields: [tagId], references: [id])
+
+  @@index([tagId])
+
+  @@id([pratoId, tagId])
+}
+
+model Avaliacao {
+  id String @id @default(uuid()) @db.Uuid
+  nota Decimal @db.Decimal(2,1)
+  descricao String?
+
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  pratoId String @db.Uuid
+  prato Prato @relation(fields: [pratoId], references: [id])
+
+  usuarioId String @db.Uuid
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([usuarioId, pratoId])
+
+  @@index([pratoId])
+
+  fotos FotoAvaliacao[]
+  curtidas CurtidaAvaliacao[]
+
+}
+
+model FotoAvaliacao {
+  id String @id @default(uuid()) @db.Uuid
+  urlImagem String?
+
+  avaliacaoId String @db.Uuid
+
+  avaliacao Avaliacao @relation(fields: [avaliacaoId], references: [id])
+
+  @@index([avaliacaoId])
+}
+
+model CurtidaAvaliacao {
+  id String @id @default(uuid()) @db.Uuid
+
+  criadoEm DateTime @default(now())
+
+  avaliacaoId String @db.Uuid
+  avaliacao Avaliacao @relation(fields: [avaliacaoId], references: [id])
+
+  usuarioId String @db.Uuid
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([avaliacaoId, usuarioId])
+
+  @@index([avaliacaoId])
+  
+  
 }

@@ -1,0 +1,184 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Prato } from '../entities/prato.entity';
+import { PratoRepository } from './prato.repository';
+import { SearchPratoDto } from '../dto/search-prato-dto';
+
+@Injectable()
+export class PrismaPratoRepository implements PratoRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(prato: Prato): Promise<Prato> {
+    const data = await this.prisma.prato.create({
+      data: {
+        id: prato.id,
+        nome: prato.nome,
+        descricao: prato.descricao,
+        imagemUrl: prato.imagemUrl,
+        mediaAvaliacoes: prato.mediaAvaliacoes,
+        restauranteId: prato.restauranteId,
+      },
+    });
+
+    return new Prato(
+      data.id,
+      data.nome,
+      data.descricao,
+      data.imagemUrl,
+      Number(data.mediaAvaliacoes),
+      data.restauranteId,
+    );
+  }
+
+  async search(filters: SearchPratoDto): Promise<Prato[]> {
+    const pratos = await this.prisma.prato.findMany({
+      where: {
+        ...(filters.nome && {
+          nome: {
+            contains: filters.nome,
+            mode: 'insensitive',
+          },
+        }),
+        ...(filters.restauranteId && {
+          restauranteId: filters.restauranteId,
+        }),
+        ...(filters.tag && {
+          tags: {
+            some: {
+              tag: {
+                nome: {
+                  contains: filters.tag,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+        }),
+        ...(filters.nomeRestaurante && {
+          restaurante: {
+            nome: {
+              contains: filters.nomeRestaurante,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      },
+    });
+
+    return pratos.map(
+      (prato) =>
+        new Prato(
+          prato.id,
+          prato.nome,
+          prato.descricao,
+          prato.imagemUrl,
+          Number(prato.mediaAvaliacoes),
+          prato.restauranteId,
+        ),
+    );
+  }
+
+  async findById(id: string): Promise<Prato | null> {
+    const prato = await this.prisma.prato.findUnique({
+      where: { id },
+      include: {
+        restaurante: true,
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+      },
+    });
+
+    if (!prato) {
+      return null;
+    }
+
+    return new Prato(
+      prato.id,
+      prato.nome,
+      prato.descricao,
+      prato.imagemUrl,
+      Number(prato.mediaAvaliacoes),
+      prato.restauranteId,
+    );
+  }
+
+  async findAll(): Promise<Prato[]> {
+    const pratos = await this.prisma.prato.findMany();
+
+    return pratos.map(
+      (pratos) =>
+        new Prato(
+          pratos.id,
+          pratos.nome,
+          pratos.descricao,
+          pratos.imagemUrl,
+          Number(pratos.mediaAvaliacoes),
+          pratos.restauranteId,
+        ),
+    );
+  }
+
+  async delete(id: string): Promise<void | null> {
+    await this.prisma.prato.delete({
+      where: { id },
+    });
+  }
+
+  async addTag(pratoId: string, tagId: string): Promise<void> {
+    await this.prisma.pratoTag.create({
+      data: {
+        pratoId,
+        tagId,
+      },
+    });
+  }
+
+  async removeTag(pratoId: string, tagId: string): Promise<void> {
+    await this.prisma.pratoTag.delete({
+      where: {
+        pratoId_tagId: {
+          pratoId,
+          tagId,
+        },
+      },
+    });
+  }
+
+  async existsTag(pratoId: string, tagId: string): Promise<boolean> {
+    const pratoTag = await this.prisma.pratoTag.findUnique({
+      where: {
+        pratoId_tagId: {
+          pratoId,
+          tagId,
+        },
+      },
+    });
+
+    return pratoTag !== null;
+  }
+
+  async update(prato: Prato): Promise<Prato> {
+    const data = await this.prisma.prato.update({
+      where: {
+        id: prato.id,
+      },
+      data: {
+        nome: prato.nome,
+        descricao: prato.descricao,
+        imagemUrl: prato.imagemUrl,
+      },
+    });
+
+    return new Prato(
+      data.id,
+      data.nome,
+      data.descricao,
+      data.imagemUrl,
+      Number(data.mediaAvaliacoes),
+      data.restauranteId,
+    );
+  }
+}

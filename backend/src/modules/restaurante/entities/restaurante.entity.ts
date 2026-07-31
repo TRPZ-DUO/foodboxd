@@ -10,4 +10,13 @@ export class Restaurante {
     public longitude: number | null,
     public categoriaId: string,
   ) {}
+
+  atualizar(data: Partial<Omit<Restaurante, 'id'>>) {
+    Object.assign(
+      this,
+      Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== undefined),
+      ),
+    );
+  }
 }
