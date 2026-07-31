@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeleteAvaliacaoCommand } from './delete-avaliacao.command';
 import { AvaliacoesRepository } from '../../repositories/avaliacoes.repository';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 @CommandHandler(DeleteAvaliacaoCommand)
 export class DeleteAvaliacaoHandler implements ICommandHandler<DeleteAvaliacaoCommand> {
@@ -14,6 +14,10 @@ export class DeleteAvaliacaoHandler implements ICommandHandler<DeleteAvaliacaoCo
       throw new NotFoundException(
         `Avaliação não encontrada, id: ${command.id}`,
       );
+    }
+
+    if (avaliacao.usuarioId !== command.usuarioId) {
+      throw new ForbiddenException('Você não pode excluir esta avaliação.');
     }
 
     return this.repository.delete(avaliacao.id);

@@ -85,8 +85,11 @@ export class AvaliacaoController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateAvaliacaoDto,
+    @Req() req: AutenticacaoRequest,
   ) {
-    return this.commandBus.execute(new UpdateAvaliacaoCommand(id, dto));
+    return this.commandBus.execute(
+      new UpdateAvaliacaoCommand(id, req.user.id, dto),
+    );
   }
 
   @Get(':avaliacaoId/fotos')
@@ -115,8 +118,11 @@ export class AvaliacaoController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  delete(@Param('id', ParseUUIDPipe) id: string) {
-    return this.commandBus.execute(new DeleteAvaliacaoCommand(id));
+  delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AutenticacaoRequest,
+  ) {
+    return this.commandBus.execute(new DeleteAvaliacaoCommand(id, req.user.id));
   }
 
   @Delete('fotos/:fotoId')
