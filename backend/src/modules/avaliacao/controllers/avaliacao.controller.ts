@@ -41,8 +41,10 @@ export class AvaliacaoController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() avaliacao: CreateAvaliacaoDto) {
-    return this.commandBus.execute(new CreateAvaliacaoCommand(avaliacao));
+  create(@Body() dto: CreateAvaliacaoDto, @Req() req: AutenticacaoRequest) {
+    return this.commandBus.execute(
+      new CreateAvaliacaoCommand(req.user.id, dto),
+    );
   }
 
   @Post(':avaliacaoId/fotos')
