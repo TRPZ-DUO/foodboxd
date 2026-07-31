@@ -9,6 +9,8 @@ import {
   Get,
   UseInterceptors,
   UploadedFile,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateAvaliacaoDto } from '../dto/create-avaliacao.dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -25,6 +27,10 @@ import { diskStorage } from 'multer';
 import 'multer';
 import { GetAllFotosByAvaliacaoQuery } from '../queries/get-all-fotos-by-avaliacao/get-all-fotos-by-avaliacao.query';
 import { RemoveFotoCommand } from '../commands/remove-foto/remove-foto.command';
+import { AddCurtidaCommand } from '../commands/add-curtida/add-curtida-command';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth/jwt-auth.guard';
+import type { AutenticacaoRequest } from 'src/modules/auth/interfaces/autenticacao-request.interface';
+import { RemoveCurtidaCommand } from '../commands/remove-curtida/remove-curtida.command';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
@@ -57,6 +63,17 @@ export class AvaliacaoController {
     const imagemUrl = `/uploads/${file.filename}`;
 
     return this.commandBus.execute(new AddFotoCommand(avaliacaoId, imagemUrl));
+  }
+
+  @Post(':avaliacaoId/curtidas')
+  @UseGuards(JwtAuthGuard)
+  addCurtida(
+    @Req() req: AutenticacaoRequest,
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
+  ) {
+    return this.commandBus.execute(
+      new AddCurtidaCommand(req.user.id, avaliacaoId),
+    );
   }
 
   @Patch(':id')
@@ -99,5 +116,16 @@ export class AvaliacaoController {
   @Delete('fotos/:fotoId')
   deleteFoto(@Param('fotoId', ParseUUIDPipe) fotoId: string) {
     return this.commandBus.execute(new RemoveFotoCommand(fotoId));
+  }
+
+  @Delete(':avaliacaoId/curtidas')
+  @UseGuards(JwtAuthGuard)
+  RemoveCurtida(
+    @Req() req: AutenticacaoRequest,
+    @Param('avaliacaoId', ParseUUIDPipe) avaliacaoId: string,
+  ) {
+    return this.commandBus.execute(
+      new RemoveCurtidaCommand(req.user.id, avaliacaoId),
+    );
   }
 }
