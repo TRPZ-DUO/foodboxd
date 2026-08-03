@@ -25,6 +25,7 @@ model Usuario {
   
   curtidas CurtidaAvaliacao[]
   avaliacoes Avaliacao[]
+  favoritos Favorito[]
 
   @@map("usuarios")
   
@@ -76,6 +77,7 @@ model Prato {
 
   tags PratoTag[]
   avaliacoes Avaliacao[]
+  favoritos Favorito[]
 }
 
 model Tag {
@@ -145,6 +147,22 @@ model CurtidaAvaliacao {
   @@unique([avaliacaoId, usuarioId])
 
   @@index([avaliacaoId])
-  
-  
 }
+
+model Favorito {
+  id String @id @default(uuid()) @db.Uuid
+  
+  criadoEm DateTime @default(now())
+  
+  usuarioId String @db.Uuid
+  pratoId String @db.Uuid
+
+  prato Prato @relation(fields: [pratoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([usuarioId, pratoId])
+  
+  @@index([usuarioId])
+  @@index([pratoId])
+}
+
