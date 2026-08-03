@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prato } from '../entities/prato.entity';
 import { PratoRepository } from './prato.repository';
 import { SearchPratoDto } from '../dto/search-prato-dto';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class PrismaPratoRepository implements PratoRepository {

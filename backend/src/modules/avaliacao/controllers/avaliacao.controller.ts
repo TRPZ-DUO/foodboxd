@@ -28,9 +28,9 @@ import 'multer';
 import { GetAllFotosByAvaliacaoQuery } from '../queries/get-all-fotos-by-avaliacao/get-all-fotos-by-avaliacao.query';
 import { RemoveFotoCommand } from '../commands/remove-foto/remove-foto.command';
 import { AddCurtidaCommand } from '../commands/add-curtida/add-curtida-command';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth/jwt-auth.guard';
-import type { AutenticacaoRequest } from 'src/modules/auth/interfaces/autenticacao-request.interface';
 import { RemoveCurtidaCommand } from '../commands/remove-curtida/remove-curtida.command';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
+import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
