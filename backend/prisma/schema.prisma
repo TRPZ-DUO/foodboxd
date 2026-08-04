@@ -14,6 +14,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Visibilidade {
+  PUBLICO
+  PRIVADO
+}
+
 model Usuario {
   id          String   @id @default(uuid()) @db.Uuid
   nomeUsuario String   @unique
@@ -26,6 +31,7 @@ model Usuario {
   curtidas CurtidaAvaliacao[]
   avaliacoes Avaliacao[]
   favoritos Favorito[]
+  listas Lista[]
 
   @@map("usuarios")
   
@@ -78,6 +84,7 @@ model Prato {
   tags PratoTag[]
   avaliacoes Avaliacao[]
   favoritos Favorito[]
+  itens ItemLista[]
 }
 
 model Tag {
@@ -166,3 +173,35 @@ model Favorito {
   @@index([pratoId])
 }
 
+model Lista {
+  id String @id @default(uuid()) @db.Uuid
+  titulo String
+  descricao String?
+  visibilidade Visibilidade
+  criadoEm DateTime @default(now())
+
+  usuarioId String @db.Uuid
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  
+  itens ItemLista[]
+}
+
+model ItemLista {
+  id String @id @default(uuid()) @db.Uuid
+  posicao Int
+
+  pratoId String @db.Uuid
+  listaId String @db.Uuid
+
+  prato Prato @relation(fields: [pratoId], references: [id])
+  lista Lista @relation(fields: [listaId], references: [id], onDelete: Cascade)
+
+
+
+  @@unique([listaId, pratoId])
+  @@unique([listaId, posicao])
+  
+  @@index([listaId])
+  @@index([pratoId])
+}
