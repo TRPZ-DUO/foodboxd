@@ -1,4 +1,4 @@
-import { Visibilidade } from '../enums/visibilidade.enum';
+import { Visibilidade } from '../../../generated/prisma/enums';
 
 export class Lista {
   constructor(
@@ -10,4 +10,13 @@ export class Lista {
 
     public readonly usuarioId: string,
   ) {}
+
+  atualizar(data: Partial<Omit<Lista, 'id'>>) {
+    Object.assign(
+      this,
+      Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== undefined),
+      ),
+    );
+  }
 }

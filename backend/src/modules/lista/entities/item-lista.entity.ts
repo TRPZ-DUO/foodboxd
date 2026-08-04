@@ -6,4 +6,13 @@ export class ItemLista {
     public readonly pratoId: string,
     public readonly listaId: string,
   ) {}
+
+  atualizar(data: Partial<Omit<ItemLista, 'id'>>) {
+    Object.assign(
+      this,
+      Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== undefined),
+      ),
+    );
+  }
 }
