@@ -1,4 +1,4 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { Avaliacao } from '../entities/avaliacao.entity';
 import { CurtidaAvaliacao } from '../entities/curtida-avaliacao.entity';
 import { FotoAvaliacao } from '../entities/foto-avaliacao.entity';

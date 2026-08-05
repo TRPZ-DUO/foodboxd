@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { RestauranteRepository } from './restaurante.repository';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Restaurante } from '../entities/restaurante.entity';
 import { SearchRestauranteDto } from '../dto/search-restaurante.dto';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class PrismaRestauranteRepository implements RestauranteRepository {
