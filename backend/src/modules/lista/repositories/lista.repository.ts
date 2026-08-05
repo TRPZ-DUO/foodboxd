@@ -16,7 +16,11 @@ export abstract class ListaRepository {
 
   abstract removePrato(itemId: string): Promise<void>;
 
-  abstract updatePosicao(itemId: string, posicao: number): Promise<ItemLista>;
+  abstract updatePosicao(
+    itemId: string,
+    listaId: string,
+    posicao: number,
+  ): Promise<ItemLista>;
 
   abstract findItemById(itemId: string): Promise<ItemLista | null>;
 

@@ -1,3 +1,5 @@
-export class CreatePratoLista {
-  posicao!: string;
+export class CreatePratoListaDto {
+  posicao!: number;
+  pratoId!: string;
+  listaId!: string;
 }

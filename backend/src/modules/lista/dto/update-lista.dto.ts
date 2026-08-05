@@ -4,5 +4,4 @@ export class UpdateListaDto {
   titulo?: string;
   descricao?: string;
   visibilidade?: Visibilidade;
-  usuarioId?: string;
 }

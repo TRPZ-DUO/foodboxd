@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListaRepository } from './lista.repository';
 import { ItemLista } from '../entities/item-lista.entity';
 import { Lista } from '../entities/lista.entity';
@@ -107,17 +107,72 @@ export class PrismaListaRepository implements ListaRepository {
     await this.prisma.itemLista.delete({ where: { id } });
   }
 
-  async updatePosicao(itemId: string, posicao: number): Promise<ItemLista> {
-    const data = await this.prisma.itemLista.update({
-      where: {
-        id: itemId,
-      },
-      data: {
-        posicao,
-      },
-    });
+  async updatePosicao(
+    itemId: string,
+    listaId: string,
+    novaPosicao: number,
+  ): Promise<ItemLista> {
+    return this.prisma.$transaction(async (tx) => {
+      const item = await tx.itemLista.findUnique({
+        where: { id: itemId },
+      });
 
-    return new ItemLista(data.id, data.posicao, data.pratoId, data.listaId);
+      if (!item) {
+        throw new NotFoundException('Item não encontrado');
+      }
+
+      const itens = await tx.itemLista.findMany({
+        where: { listaId },
+        orderBy: {
+          posicao: 'asc',
+        },
+      });
+
+      const ordenados = itens.filter((i) => i.id !== itemId);
+
+      const indice = Math.max(0, Math.min(novaPosicao - 1, ordenados.length));
+
+      ordenados.splice(indice, 0, item);
+
+      for (let i = 0; i < ordenados.length; i++) {
+        await tx.itemLista.update({
+          where: {
+            id: ordenados[i].id,
+          },
+          data: {
+            posicao: 1000 + i,
+          },
+        });
+      }
+
+      for (let i = 0; i < ordenados.length; i++) {
+        await tx.itemLista.update({
+          where: {
+            id: ordenados[i].id,
+          },
+          data: {
+            posicao: i + 1,
+          },
+        });
+      }
+
+      const atualizado = await tx.itemLista.findUnique({
+        where: {
+          id: itemId,
+        },
+      });
+
+      if (!atualizado) {
+        throw new NotFoundException('Item não encontrado');
+      }
+
+      return new ItemLista(
+        atualizado.id,
+        atualizado.posicao,
+        atualizado.pratoId,
+        atualizado.listaId,
+      );
+    });
   }
 
   async findItemById(id: string): Promise<ItemLista | null> {
