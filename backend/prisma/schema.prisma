@@ -28,10 +28,15 @@ model Usuario {
   avatar      String?
   dataCriacao DateTime @default(now())
   
-  curtidas CurtidaAvaliacao[]
+  curtidasAvaliacao CurtidaAvaliacao[]
   avaliacoes Avaliacao[]
   favoritos Favorito[]
   listas Lista[]
+  comentarios Comentario[]
+  curtidasComentarios CurtidaComentario[]
+
+  seguindo Seguidor[] @relation("Seguidores")
+  seguidores Seguidor[] @relation("Seguindo")
 
   @@map("usuarios")
   
@@ -126,6 +131,7 @@ model Avaliacao {
 
   fotos FotoAvaliacao[]
   curtidas CurtidaAvaliacao[]
+  comentarios Comentario[]
 
 }
 
@@ -204,4 +210,54 @@ model ItemLista {
   
   @@index([listaId])
   @@index([pratoId])
+}
+
+model Seguidor {
+  id String @id @default(uuid()) @db.Uuid
+
+  criadoEm DateTime @default(now())
+
+  seguidorId String @db.Uuid
+  seguidoId String @db.Uuid
+
+  seguidor Usuario @relation("Seguidores", fields: [seguidorId], references: [id])
+  seguido Usuario @relation("Seguindo", fields: [seguidoId], references: [id])
+
+  @@unique([seguidorId, seguidoId])
+  @@index([seguidorId])
+  @@index([seguidoId])
+
+}
+
+model Comentario {
+  id String @id @default(uuid()) @db.Uuid
+  conteudo String
+  
+  criadoEm DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  avaliacaoId String @db.Uuid
+  usuarioId String @db.Uuid
+
+  curtidas CurtidaComentario[]
+
+  avaliacao Avaliacao @relation(fields: [avaliacaoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+}
+
+model CurtidaComentario {
+  id String @id @default(uuid()) @db.Uuid
+
+  criadoEm DateTime @default(now())
+
+  comentarioId String @db.Uuid
+  usuarioId String @db.Uuid
+
+  comentario Comentario @relation(fields: [comentarioId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+
+  @@unique([comentarioId, usuarioId])
+  @@index([comentarioId])
+  @@index([usuarioId])
 }
