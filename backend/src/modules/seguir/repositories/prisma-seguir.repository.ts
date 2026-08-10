@@ -55,4 +55,40 @@ export class PrismaSeguirRepository implements SeguirRepository {
 
     return relacao !== null;
   }
+
+  async findSeguidores(usuarioId: string): Promise<Seguidor[]> {
+    const seguidores = await this.prisma.seguidor.findMany({
+      where: {
+        seguidoId: usuarioId,
+      },
+    });
+
+    return seguidores.map(
+      (seguidor) =>
+        new Seguidor(
+          seguidor.id,
+          seguidor.criadoEm,
+          seguidor.seguidorId,
+          seguidor.seguidoId,
+        ),
+    );
+  }
+
+  async findSeguindo(usuarioId: string): Promise<Seguidor[]> {
+    const seguindo = await this.prisma.seguidor.findMany({
+      where: {
+        seguidorId: usuarioId,
+      },
+    });
+
+    return seguindo.map(
+      (seguindo) =>
+        new Seguidor(
+          seguindo.id,
+          seguindo.criadoEm,
+          seguindo.seguidorId,
+          seguindo.seguidoId,
+        ),
+    );
+  }
 }
