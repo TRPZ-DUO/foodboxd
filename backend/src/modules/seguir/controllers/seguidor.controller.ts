@@ -16,6 +16,8 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
 import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
 import { RemoveSeguidorCommand } from '../commands/remove-seguidor/remove-seguidor.command';
 import { GetSeguidorByIdQuery } from '../queries/get-seguidor-by-id/get-seguidor-by-id.query';
+import { GetSeguindoQuery } from '../queries/get-seguindo/get-seguindo.query';
+import { GetSeguidoresQuery } from '../queries/get-seguidores/get-seguidores.query';
 
 @Controller('seguidores')
 export class SeguidorController {
@@ -47,5 +49,15 @@ export class SeguidorController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.commandBus.execute(new RemoveSeguidorCommand(id, req.user.id));
+  }
+
+  @Get('seguidores/:id')
+  findSeguidores(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetSeguidoresQuery(id));
+  }
+
+  @Get('seguindo/:id')
+  findSeguindos(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetSeguindoQuery(id));
   }
 }

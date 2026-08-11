@@ -1,3 +1,3 @@
-export class GetSeguindosQuery {
+export class GetSeguindoQuery {
   constructor(public readonly usuarioId: string) {}
 }

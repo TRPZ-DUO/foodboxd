@@ -8,7 +8,7 @@ import { CreateSeguidorHandler } from './commands/create-seguidor/create-seguido
 import { RemoveSeguidorHandler } from './commands/remove-seguidor/remove-seguidor.handle';
 import { GetSeguidorByIdHandler } from './queries/get-seguidor-by-id/get-seguidor-by-id-handler';
 import { GetSeguidoresHandler } from './queries/get-seguidores/get-seguidores.handler';
-import { GetSeguindosHandler } from './queries/get-seguindos/get-seguindos.handler';
+import { GetSeguindoHandler } from './queries/get-seguindo/get-seguindo.handler';
 
 @Module({
   imports: [CqrsModule, PrismaModule],
@@ -26,7 +26,7 @@ import { GetSeguindosHandler } from './queries/get-seguindos/get-seguindos.handl
 
     GetSeguidorByIdHandler,
     GetSeguidoresHandler,
-    GetSeguindosHandler,
+    GetSeguindoHandler,
   ],
 })
 export class SeguidorModule {}

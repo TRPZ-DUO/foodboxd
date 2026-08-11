@@ -1,13 +1,13 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetSeguindosQuery } from './get-seguindos.query';
+import { GetSeguindoQuery } from './get-seguindo.query';
 import { SeguirRepository } from '../../repositories/seguir.repository';
 import { Seguidor } from '../../entities/seguidor.entity';
 
-@QueryHandler(GetSeguindosQuery)
-export class GetSeguindosHandler implements IQueryHandler<GetSeguindosQuery> {
+@QueryHandler(GetSeguindoQuery)
+export class GetSeguindoHandler implements IQueryHandler<GetSeguindoQuery> {
   constructor(private readonly repository: SeguirRepository) {}
 
-  async execute(query: GetSeguindosQuery): Promise<Seguidor[]> {
+  async execute(query: GetSeguindoQuery): Promise<Seguidor[]> {
     return this.repository.findSeguindo(query.usuarioId);
   }
 }
