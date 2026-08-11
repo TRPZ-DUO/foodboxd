@@ -8,4 +8,8 @@ export abstract class SeguirRepository {
   abstract findById(id: string): Promise<Seguidor | null>;
 
   abstract exists(seguidorId: string, seguindoId: string): Promise<boolean>;
+
+  abstract findSeguidores(usuarioId: string): Promise<Seguidor[]>;
+
+  abstract findSeguindo(usuarioId: string): Promise<Seguidor[]>;
 }
