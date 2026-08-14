@@ -19,6 +19,14 @@ enum Visibilidade {
   PRIVADO
 }
 
+enum TipoAtividade {
+  AVALIACAO_CRIADA
+  COMENTARIO_CRIADO
+  FAVORITO_ADICIONADO
+  LISTA_CRIADA
+  SEGUIDOR_ADICIONADO
+}
+
 model Usuario {
   id          String   @id @default(uuid()) @db.Uuid
   nomeUsuario String   @unique
@@ -34,6 +42,7 @@ model Usuario {
   listas Lista[]
   comentarios Comentario[]
   curtidasComentarios CurtidaComentario[]
+  atividades Atividade[]
 
   seguindo Seguidor[] @relation("Seguidores")
   seguidores Seguidor[] @relation("Seguindo")
@@ -260,4 +269,17 @@ model CurtidaComentario {
   @@unique([comentarioId, usuarioId])
   @@index([comentarioId])
   @@index([usuarioId])
+}
+
+model Atividade {
+  id String @id @default(uuid()) @db.Uuid
+  tipo TipoAtividade
+  usuarioId String @db.Uuid
+  referenciaId String @db.Uuid
+  criadoEm DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@index([usuarioId, criadoEm])
+  @@index ([criadoEm])
 }
