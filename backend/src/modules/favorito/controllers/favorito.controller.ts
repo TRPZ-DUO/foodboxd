@@ -19,6 +19,7 @@ import { GetFavoritoByIdQuery } from '../queries/get-favorito-by-id/get-favorito
 import { GetAllFavoritosQuery } from '../queries/get-all-favoritos/get-all-favoritos.query';
 import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('favoritos')
 export class FavoritoController {
@@ -27,6 +28,7 @@ export class FavoritoController {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Req() req: AutenticacaoRequest, @Body() dto: CreateFavoritoDto) {
@@ -45,6 +47,7 @@ export class FavoritoController {
     return this.queryBus.execute(new GetFavoritoByIdQuery(id));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   remove(

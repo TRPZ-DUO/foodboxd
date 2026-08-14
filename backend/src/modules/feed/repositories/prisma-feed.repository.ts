@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { FeedRepository } from './feed.repository';
 import { Atividade } from '../entities/atividade.entity';
+import { FeedResult } from '../interfaces/feed-result.interface';
 
 @Injectable()
 export class PrismaFeedRepository implements FeedRepository {
@@ -29,8 +30,11 @@ export class PrismaFeedRepository implements FeedRepository {
   async findFeed(
     usuarioId: string,
     limit: number,
-    cursor?: Date,
-  ): Promise<Atividade[]> {
+    cursor?: {
+      criadoEm: Date;
+      id: string;
+    },
+  ): Promise<FeedResult> {
     const atividades = await this.prisma.atividade.findMany({
       where: {
         usuario: {
@@ -42,62 +46,132 @@ export class PrismaFeedRepository implements FeedRepository {
         },
 
         ...(cursor && {
-          criadoEm: {
-            lt: cursor,
-          },
+          OR: [
+            {
+              criadoEm: {
+                lt: cursor.criadoEm,
+              },
+            },
+            {
+              criadoEm: cursor.criadoEm,
+              id: {
+                lt: cursor.id,
+              },
+            },
+          ],
         }),
       },
 
-      orderBy: {
-        criadoEm: 'desc',
-      },
+      orderBy: [
+        {
+          criadoEm: 'desc',
+        },
+        {
+          id: 'desc',
+        },
+      ],
 
-      take: limit,
+      take: limit + 1,
     });
 
-    return atividades.map(
-      (atividade) =>
-        new Atividade(
-          atividade.id,
-          atividade.tipo,
-          atividade.usuarioId,
-          atividade.referenciaId,
-          atividade.criadoEm,
-        ),
-    );
+    const hasNextPage = atividades.length > limit;
+
+    const itens = hasNextPage ? atividades.slice(0, limit) : atividades;
+
+    const ultimo = itens[itens.length - 1];
+
+    return {
+      items: itens.map(
+        (atividade) =>
+          new Atividade(
+            atividade.id,
+            atividade.tipo,
+            atividade.usuarioId,
+            atividade.referenciaId,
+            atividade.criadoEm,
+          ),
+      ),
+
+      nextCursor:
+        hasNextPage && ultimo
+          ? {
+              criadoEm: ultimo.criadoEm,
+              id: ultimo.id,
+            }
+          : null,
+
+      hasNextPage,
+    };
   }
+
   async findAtividadesByUsuario(
     usuarioId: string,
     limit: number,
-    cursor?: Date,
-  ): Promise<Atividade[]> {
+    cursor?: {
+      criadoEm: Date;
+      id: string;
+    },
+  ): Promise<FeedResult> {
     const atividades = await this.prisma.atividade.findMany({
       where: {
         usuarioId,
 
         ...(cursor && {
-          criadoEm: {
-            lt: cursor,
-          },
+          OR: [
+            {
+              criadoEm: {
+                lt: cursor.criadoEm,
+              },
+            },
+            {
+              criadoEm: cursor.criadoEm,
+              id: {
+                lt: cursor.id,
+              },
+            },
+          ],
         }),
       },
 
-      orderBy: {
-        criadoEm: 'desc',
-      },
+      orderBy: [
+        {
+          criadoEm: 'desc',
+        },
+        {
+          id: 'desc',
+        },
+      ],
 
-      take: limit,
+      take: limit + 1,
     });
 
-    return atividades.map(
-      (atividade) =>
-        new Atividade(
-          atividade.id,
-          atividade.tipo,
-          atividade.usuarioId,
-          atividade.referenciaId,
-          atividade.criadoEm,
-        ),
-    );
+    const hasNextPage = atividades.length > limit;
+
+    const itens = hasNextPage ? atividades.slice(0, limit) : atividades;
+
+    const ultimo = itens[itens.length - 1];
+
+    return {
+      items: itens.map(
+        (atividade) =>
+          new Atividade(
+            atividade.id,
+            atividade.tipo,
+            atividade.usuarioId,
+            atividade.referenciaId,
+            atividade.criadoEm,
+          ),
+      ),
+
+      nextCursor:
+        hasNextPage && ultimo
+          ? {
+              criadoEm: ultimo.criadoEm,
+              id: ultimo.id,
+            }
+          : null,
+
+      hasNextPage,
+    };
   }
 }

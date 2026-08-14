@@ -30,6 +30,7 @@ import { FindItemByIdQuery } from '../queries/find-item-by-id/find-item-by-id.qu
 import { FindItensByListaIdQuery } from '../queries/find-itens-by-lista-id/find-itens-by-lista-id.query';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
 import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('listas')
 export class ListaController {
@@ -38,12 +39,14 @@ export class ListaController {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateListaDto, @Req() req: AutenticacaoRequest) {
     return this.commandBus.execute(new CreateListaCommand(req.user.id, dto));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Patch(':listaId')
   @UseGuards(JwtAuthGuard)
   update(
@@ -56,6 +59,7 @@ export class ListaController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':listaId')
   @UseGuards(JwtAuthGuard)
   delete(
@@ -77,6 +81,7 @@ export class ListaController {
     return this.queryBus.execute(new FindListaByIdQuery(listaId));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Post(':listaId/itens')
   @UseGuards(JwtAuthGuard)
   addPrato(@Body() dto: CreatePratoListaDto, @Req() req: AutenticacaoRequest) {
@@ -95,6 +100,7 @@ export class ListaController {
     return this.queryBus.execute(new FindItemByIdQuery(itemId));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Patch('itens/:itemId')
   @UseGuards(JwtAuthGuard)
   updatePosicao(
@@ -107,6 +113,7 @@ export class ListaController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete('itens/:itemId')
   @UseGuards(JwtAuthGuard)
   removePrato(

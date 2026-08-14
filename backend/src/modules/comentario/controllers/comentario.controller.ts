@@ -26,6 +26,7 @@ import { UpdateComentarioDto } from '../dto/update-comentario.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
 import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
 import { CreateComentarioDto } from '../dto/create-comentario.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('comentarios')
 export class ComentarioController {
@@ -34,6 +35,7 @@ export class ComentarioController {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateComentarioDto, @Req() req: AutenticacaoRequest) {
@@ -42,6 +44,8 @@ export class ComentarioController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
+  @ApiBearerAuth('JWT-auth')
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   update(
@@ -54,6 +58,7 @@ export class ComentarioController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   delete(
@@ -65,6 +70,7 @@ export class ComentarioController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Post(':comentarioId/curtidas')
   @UseGuards(JwtAuthGuard)
   addCurtida(
@@ -76,6 +82,7 @@ export class ComentarioController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':comentarioId/curtidas')
   @UseGuards(JwtAuthGuard)
   removeCurtida(

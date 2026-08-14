@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveTagCommand } from './remove-tag.command';
 import { PratoRepository } from '../../repositories/prato.repository';
 import { NotFoundException } from '@nestjs/common';
-import { TagRepository } from 'src/modules/tag/repositories/tag.repository';
+import { TagRepository } from '../../../tag/repositories/tag.repository';
 
 @CommandHandler(RemoveTagCommand)
 export class RemoveTagHandler implements ICommandHandler<RemoveTagCommand> {

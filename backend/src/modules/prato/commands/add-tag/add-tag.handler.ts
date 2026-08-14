@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AddTagCommand } from './add-tag.command';
 import { PratoRepository } from '../../repositories/prato.repository';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { TagRepository } from 'src/modules/tag/repositories/tag.repository';
+import { TagRepository } from '../../../tag/repositories/tag.repository';
 
 @CommandHandler(AddTagCommand)
 export class AddTagHandler implements ICommandHandler<AddTagCommand> {

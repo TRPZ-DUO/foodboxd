@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Tag } from '../entities/tag.entity';
 import { TagRepository } from './tag.repository';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class PrismaTagRepository implements TagRepository {

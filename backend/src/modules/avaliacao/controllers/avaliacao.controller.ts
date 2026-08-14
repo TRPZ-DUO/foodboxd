@@ -31,6 +31,7 @@ import { AddCurtidaCommand } from '../commands/add-curtida/add-curtida-command';
 import { RemoveCurtidaCommand } from '../commands/remove-curtida/remove-curtida.command';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth/jwt-auth.guard';
 import type { AutenticacaoRequest } from '../../auth/interfaces/autenticacao-request.interface';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('avaliacoes')
 export class AvaliacaoController {
@@ -39,6 +40,7 @@ export class AvaliacaoController {
     private readonly commandBus: CommandBus,
   ) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateAvaliacaoDto, @Req() req: AutenticacaoRequest) {
@@ -47,6 +49,7 @@ export class AvaliacaoController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Post(':avaliacaoId/fotos')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
@@ -69,6 +72,7 @@ export class AvaliacaoController {
     return this.commandBus.execute(new AddFotoCommand(avaliacaoId, imagemUrl));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Post(':avaliacaoId/curtidas')
   @UseGuards(JwtAuthGuard)
   addCurtida(
@@ -80,6 +84,7 @@ export class AvaliacaoController {
     );
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   update(
@@ -116,6 +121,7 @@ export class AvaliacaoController {
     return this.queryBus.execute(new GetAvaliacaoByIdQuery(id));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   delete(
@@ -130,6 +136,7 @@ export class AvaliacaoController {
     return this.commandBus.execute(new RemoveFotoCommand(fotoId));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':avaliacaoId/curtidas')
   @UseGuards(JwtAuthGuard)
   RemoveCurtida(
