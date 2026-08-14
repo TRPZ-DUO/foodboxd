@@ -18,6 +18,7 @@ import { RemoveSeguidorCommand } from '../commands/remove-seguidor/remove-seguid
 import { GetSeguidorByIdQuery } from '../queries/get-seguidor-by-id/get-seguidor-by-id.query';
 import { GetSeguindoQuery } from '../queries/get-seguindo/get-seguindo.query';
 import { GetSeguidoresQuery } from '../queries/get-seguidores/get-seguidores.query';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('seguidores')
 export class SeguidorController {
@@ -26,6 +27,7 @@ export class SeguidorController {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @ApiBearerAuth('JWT-auth')
   @Post(':seguidoId')
   @UseGuards(JwtAuthGuard)
   create(
@@ -42,6 +44,7 @@ export class SeguidorController {
     return this.queryBus.execute(new GetSeguidorByIdQuery(id));
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   remove(

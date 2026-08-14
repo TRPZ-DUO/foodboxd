@@ -280,6 +280,6 @@ model Atividade {
 
   usuario Usuario @relation(fields: [usuarioId], references: [id])
 
-  @@index([usuarioId, criadoEm])
+  @@index([usuarioId, criadoEm, id])
   @@index ([criadoEm])
 }

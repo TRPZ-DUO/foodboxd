@@ -12,10 +12,10 @@ import { FavoritoModule } from './modules/favorito/favorito.module';
 import { FeedModule } from './modules/feed/feed.module';
 import { ListaModule } from './modules/lista/lista.module';
 import { NotificacaoModule } from './modules/notificacao/notificacao.module';
-import { SeguirModule } from './modules/seguir/seguir.module';
 import { TagModule } from './modules/tag/tag.module';
 import { UsuarioModule } from './modules/usuario/usuario.module';
 import { ConfigModule } from '@nestjs/config';
+import { SeguidorModule } from './modules/seguir/seguidor.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { ConfigModule } from '@nestjs/config';
     FeedModule,
     ListaModule,
     NotificacaoModule,
-    SeguirModule,
+    SeguidorModule,
     TagModule,
     UsuarioModule,
   ],

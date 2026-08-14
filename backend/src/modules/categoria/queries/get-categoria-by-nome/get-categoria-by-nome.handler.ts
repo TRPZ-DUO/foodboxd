@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetCategoriaByNomeQuery } from './get-categoria-by-nome.query';
 import { CategoriaRepository } from '../../repositories/categoria.repository';
-import { Categoria } from 'generated/prisma/client';
+import { Categoria } from '../../entities/categoria.entity';
 
 @QueryHandler(GetCategoriaByNomeQuery)
 export class GetCategoriaByNomeHandler implements IQueryHandler<GetCategoriaByNomeQuery> {
